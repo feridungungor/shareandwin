@@ -1,105 +1,250 @@
+import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_winshare_001/screen/with_button.dart';
 import 'package:flutter_winshare_001/view/my_widgets.dart';
 
-Color leftColor = Color(0XFF1D39A3);
-Color righrColor = Color(0XFF0E247B);
-Color bakiyeColor = Color(0XFF2D3681);
-Color altinUye = Color(0XFFEfb01E);
-Color InstagremColor = Color(0XFFe96f08);
+import '../main.dart';
 
-class withScroll extends StatefulWidget {
+
+
+class WithScroll extends StatefulWidget {
   @override
-  _withScrollState createState() => _withScrollState();
+  State createState() => WithScrollState();
 }
 
-class _withScrollState extends State<withScroll> {
-  double sliderValue = 39;
-  bool isHeaderClose = false;
-  double lastOffset = 0;
-  ScrollController scrollController;
-  final formKey = GlobalKey<FormState>();
-  double dedede = 350;
+class WithScrollState extends State<WithScroll> {
 
-  double OranOranti(double ax,double a1,double a2,double b1,double b2){
-    return (b1*(ax-a2)+b2*(a1-ax))/(a1-a2);
+  static const double kExpandedHeight = 300.0;
+  double sliderValue = 39;
+
+  double OranOranti(double ax, double a1, double a2, double b1, double b2) {
+    double dd = (b1 * (ax - a2) + b2 * (a1 - ax)) / (a1 - a2);
+    return dd;
   }
 
+  ScrollController _scrollController = new ScrollController();
 
   @override
   void initState() {
-    super.initState();
-    scrollController = ScrollController();
-    scrollController.addListener((){
-
-      print("deded ${formKey.currentContext.size.height}");
-      dedede = formKey.currentContext.size.height;
-
-      if(scrollController.offset<=0){
-        isHeaderClose = false;
-      }else if(scrollController.offset>=scrollController.position.maxScrollExtent){
-        isHeaderClose = true;
-      }
-      else{
-        isHeaderClose = scrollController.offset > lastOffset ? true :false;
-      }
-
+    _scrollController.addListener(() {
       setState(() {
-        lastOffset = scrollController.offset;
-//        dedede = formKey.currentContext.size.height;
       });
     });
   }
 
   @override
   void dispose() {
-    scrollController.dispose();
-    super.dispose();
+    _scrollController.dispose();
   }
 
-  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: myScaffold(),
-    );
-  }
-  Scaffold myScaffold() {
+
+    double size = !_scrollController.hasClients || _scrollController.offset == 0
+        ? 100
+        : 100 -
+        math.min(
+          100.0,
+          (100 /
+              kExpandedHeight *
+              math.min(_scrollController.offset, kExpandedHeight) *
+              1.5),
+        );
+
     return Scaffold(
       body: Column(
         children: <Widget>[
-          myClosedSliver,
-          SizedBox(height: 20),
-          allContent(),
+          birStack(size),
+          SizedBox(height: 10,),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  OneStep,
+                  TwoStep,
+                  ThreeStep,
+                  FourStep,
+                  FiveStep,
+                  SixStep,
+                  SevenStep,
+                ],
+              ),
+              controller: _scrollController,
+            ),
+          )
         ],
       ),
     );
   }
 
-  Widget allContent() => Expanded(
-    child: SingleChildScrollView(
-      controller: scrollController,
-      child: Column(
-        children: <Widget>[
-          SizedBox(
-            height: 10,
+  Widget birStack(double aa) => Stack(
+    children: <Widget>[
+      Positioned(
+        child: Container(
+          height: OranOranti(aa, 0, 100, 200, 350),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: leftColor,
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(60),
+            ),
           ),
-          OneStep,
-          TwoStep,
-          ThreeStep,
-          FourStep,
-          FiveStep,
-          SixStep,
-          SevenStep,
-          SizedBox(
-            height: 20,
-          )
-        ],
+        ),
       ),
-    ),
+      Positioned(
+        child: ClipPath(
+          clipper: myCustomClipper(OranOranti(aa, 0, 100, 50, 180)),
+          child: Container(
+            height: OranOranti(aa, 0, 100, 200, 350),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: righrColor,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(60),
+              ),
+            ),
+          ),
+        ),
+      ),
+      Positioned(
+        child: Container(
+          height: OranOranti(aa, 0, 100, 200, 350),
+          width: double.infinity,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  Color(0XFFef5350).withOpacity(.4),
+                  Colors.black.withAlpha(0),
+                ],
+              ),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(60),
+              )),
+        ),
+      ),
+      Positioned(
+        right: 30,
+        top: 40,
+        child: Row(
+          children: <Widget>[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.apps,
+                      color: Colors.white,
+                      size: 35,
+                    ),
+                    SizedBox(
+                      width: 3,
+                    ),
+                    Stack(
+                      children: <Widget>[
+                        Icon(
+                          Icons.notifications,
+                          color: Colors.white,
+                          size: 35,
+                        ),
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Container(
+                            child: Center(
+                                child: Text(
+                                  "1",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15),
+                                )),
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle, color: Colors.red),
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  "Bakiyeniz",
+                  style: TextStyle(
+                      color: Colors.white.withOpacity(.6),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.credit_card,
+                      color: Colors.white,
+                      size: 40,
+                    ),
+                    Text(
+                      "50.55",
+                      style: TextStyle(color: Colors.white, fontSize: 30),
+                    )
+                  ],
+                )
+              ],
+            ),
+            SizedBox(
+              width: 100,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          "Kara Göz",
+                          style:
+                          TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                        SizedBox(
+                          height: 3,
+                        ),
+                        Text(
+                          "Altın Üye",
+                          style: TextStyle(color: altinUye),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      width: 12,
+                    ),
+                    CircleAvatar(
+                      radius: 25,
+                      child: Text(
+                        "KG",
+                        style: TextStyle(color: Colors.teal),
+                      ),
+                      backgroundColor: Colors.white,
+                    )
+                  ],
+                ),
+                SizedBox(height: 20),
+                Saydam()
+              ],
+            )
+          ],
+        ),
+      ),
+    ],
   );
   Widget hizmetPlatform(String t, String aImg, String pImg) => Container(
     height: 120,
@@ -200,6 +345,7 @@ class _withScrollState extends State<withScroll> {
   );
   Widget get OneStep => Column(
     children: <Widget>[
+      SizedBox(height: 15),
       myCardWidget("Hizmet edilecek platformu seçiniz", "1"),
       SizedBox(height: 20),
       Row(
@@ -234,7 +380,7 @@ class _withScrollState extends State<withScroll> {
             18,
                 (index) {
               return Container(
-                child: Image.network("https://picsum.photos/300/300",fit: BoxFit.contain,),
+                  child: Image.network("https://picsum.photos/300/300",fit: BoxFit.contain,)
               );
             },
           ),
@@ -650,190 +796,15 @@ class _withScrollState extends State<withScroll> {
         ),
       ),
     ],);
-  Widget get myClosedSliver => Stack(
-    children: <Widget>[
-      Positioned(
-        child: AnimatedContainer(
-          key: formKey,
-          duration: Duration(milliseconds: 400),
-          height: isHeaderClose ? 200 : 350,
-          width: double.infinity,
-          decoration: BoxDecoration(
-              color: leftColor,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(60),
-              )),
-        ),
-      ),
-      Positioned(
-        child: ClipPath(
-//                  clipper: myCustomClipper(Deneme(isHeaderClose ? 200 : 350, 200, 350, 50, 180)),
-          clipper: myCustomClipper(OranOranti(dedede, 200, 350, 50, 180)),
-          child: AnimatedContainer(
-            duration: Duration(milliseconds: 400),
-            height: isHeaderClose ? 200 : 350,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: righrColor,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(60),
-              ),
-            ),
-          ),
-        ),
-      ),
-      Positioned(
-        child: AnimatedContainer(
-          duration: Duration(milliseconds: 400),
-          height: isHeaderClose ? 200 : 350,
-          width: double.infinity,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  Color(0XFFef5350).withOpacity(.4),
-                  Colors.black.withAlpha(0),
-                ],
-              ),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(60),
-              )),
-        ),
-      ),
-      Positioned(
-        right: 30,
-        top: 40,
-        child: Row(
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Icon(
-                      Icons.apps,
-                      color: Colors.white,
-                      size: 35,
-                    ),
-                    SizedBox(
-                      width: 3,
-                    ),
-                    Stack(
-                      children: <Widget>[
-                        Icon(
-                          Icons.notifications,
-                          color: Colors.white,
-                          size: 35,
-                        ),
-                        Positioned(
-                          right: 0,
-                          top: 0,
-                          child: Container(
-                            child: Center(
-                                child: Text(
-                                  "1",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15),
-                                )),
-                            height: 20,
-                            width: 20,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle, color: Colors.red),
-                          ),
-                        )
-                      ],
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Text(
-                  "Bakiyeniz",
-                  style: TextStyle(
-                      color: Colors.white.withOpacity(.6),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: <Widget>[
-                    Icon(
-                      Icons.credit_card,
-                      color: Colors.white,
-                      size: 40,
-                    ),
-                    Text(
-                      "50.55",
-                      style: TextStyle(color: Colors.white, fontSize: 30),
-                    )
-                  ],
-                )
-              ],
-            ),
-            SizedBox(
-              width: 100,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: <Widget>[
-                        Text(
-                          "Kara Göz",
-                          style:
-                          TextStyle(color: Colors.white, fontSize: 18),
-                        ),
-                        SizedBox(
-                          height: 3,
-                        ),
-                        Text(
-                          "Altın Üye",
-                          style: TextStyle(color: altinUye),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      width: 12,
-                    ),
-                    CircleAvatar(
-                      radius: 25,
-                      child: Text(
-                        "KG",
-                        style: TextStyle(color: Colors.teal),
-                      ),
-                      backgroundColor: Colors.white,
-                    )
-                  ],
-                ),
-                SizedBox(height: 20),
-                Saydam(),
-              ],
-            )
-          ],
-        ),
-      ),
-    ],
-  );
 }
 
 class myCustomClipper extends CustomClipper<Path> {
   double i;
-
   myCustomClipper(this.i);
 
   @override
   Path getClip(Size size) {
     final path = Path();
-
     path.moveTo(size.width - 210, 0);
     path.lineTo(0.0, size.height - i);
     path.lineTo(0.0, size.height);

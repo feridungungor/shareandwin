@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_winshare_001/view/my_widgets.dart';
 
-import 'acik _sliver.dart';
+import '../main.dart';
 
-Color customblue = Color(0XFF47bcff);
-Color customgreen = Color(0XFF00ba13);
+
 
 class Pay extends StatelessWidget {
   @override

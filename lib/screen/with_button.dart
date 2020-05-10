@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_winshare_001/view/my_widgets.dart';
 
-Color leftColor = Color(0XFF1D39A3);
-Color righrColor = Color(0XFF0E247B);
-Color bakiyeColor = Color(0XFF2D3681);
-Color altinUye = Color(0XFFEfb01E);
-Color InstagremColor = Color(0XFFe96f08);
+import '../main.dart';
+
+
 
 class withButton extends StatefulWidget {
   @override
